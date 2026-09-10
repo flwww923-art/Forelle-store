@@ -1,72 +1,153 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم متجر Forelle</title>
+    <title>لوحة التحكم | متجر Forelle</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة Supabase للربط بقاعدة البيانات -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 text-gray-800 min-h-screen pb-12">
 
-    <header class="bg-gray-900 text-white shadow py-4 px-6 flex justify-between items-center">
-        <h1 class="text-xl font-bold">لوحة تحكم Forelle</h1>
-        <a href="index.html" class="text-sm bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded transition">عرض المتجر <i class="fa-solid fa-arrow-left mr-1"></i></a>
+    <!-- شريط علوي -->
+    <header class="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-pink-600"><i class="fa-solid fa-gauge-high ml-2"></i>لوحة تحكم متجر Forelle</h1>
+            <a href="index.html" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+                <i class="fa-solid fa-store"></i> عرض المتجر
+            </a>
+        </div>
     </header>
 
-    <main class="max-w-4xl mx-auto p-6">
-        <!-- نموذج إعدادات Supabase المؤقت -->
-        <div class="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-200">
-            <h2 class="text-lg font-bold text-gray-800 mb-4">إعدادات الاتصال بـ Supabase</h2>
-            <div class="grid grid-cols-1 gap-4">
+    <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+        
+        <!-- قسم إعدادات الاتصال بـ Supabase (منفصل) -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-database text-pink-500"></i> إعدادات الاتصال بقاعدة البيانات (Supabase)
+            </h2>
+            <form id="config-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Supabase URL</label>
-                    <input type="text" id="supabaseUrl" placeholder="https://xxxx.supabase.co" class="w-full border rounded-lg p-2.5 text-sm">
+                    <label class="block text-sm font-semibold mb-1">Supabase URL</label>
+                    <input type="text" id="sup-url" placeholder="https://xxxx.supabase.co" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Supabase Anon Key</label>
-                    <input type="password" id="supabaseKey" placeholder="eyJh..." class="w-full border rounded-lg p-2.5 text-sm">
+                    <label class="block text-sm font-semibold mb-1">Supabase Anon Key</label>
+                    <input type="password" id="sup-key" placeholder="eyJhbGci..." class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
                 </div>
-                <button onclick="saveConfig()" class="bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition">حفظ بيانات الاتصال</button>
-            </div>
-        </div>
-
-        <!-- نموذج إضافة منتج جديد -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h2 class="text-lg font-bold text-gray-800 mb-4">إضافة منتج جديد للمتجر</h2>
-            <form id="productForm" onsubmit="addProduct(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">اسم المنتج</label>
-                    <input type="text" id="pName" required class="w-full border rounded-lg p-2.5 text-sm" placeholder="مثال: حقيبة يد جلدية">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">السعر (دج)</label>
-                    <input type="number" id="pPrice" required class="w-full border rounded-lg p-2.5 text-sm" placeholder="مثال: 6500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">رابط الصورة (Image URL)</label>
-                    <input type="url" id="pImage" required class="w-full border rounded-lg p-2.5 text-sm" placeholder="ضع رابط الصورة هنا">
-                </div>
-                <button type="submit" class="w-full bg-pink-600 text-white py-2.5 rounded-lg font-medium hover:bg-pink-700 transition">إضافة المنتج ونشره</button>
+                <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm">
+                    حفظ بيانات الاتصال
+                </button>
             </form>
-        </div>
+        </section>
+
+        <!-- قسم إضافة المنتجات مع رفع الصور -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-circle-plus text-pink-500"></i> إضافة منتج جديد بسهولة
+            </h2>
+            <form id="product-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">اسم المنتج</label>
+                    <input type="text" id="p-name" placeholder="مثال: حقيبة نسائية فاخرة" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">السعر (دج)</label>
+                        <input type="number" id="p-price" placeholder="مثال: 6500" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">رفع صورة المنتج من الهاتف</label>
+                        <input type="file" id="p-image-file" accept="image/*" class="w-full px-3 py-1.5 border rounded-xl text-sm file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                    </div>
+                </div>
+                <button type="submit" id="save-product-btn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-pink-600/20">
+                    نشر المنتج في المتجر
+                </button>
+            </form>
+        </section>
+
     </main>
 
     <script>
-        function saveConfig() {
-            const url = document.getElementById('supabaseUrl').value;
-            const key = document.getElementById('supabaseKey').value;
-            localStorage.setItem('sb_url', url);
-            localStorage.setItem('sb_key', key);
-            alert('تم حفظ إعدادات الاتصال بنجاح!');
-        }
+        // استرجاع الإعدادات المحفوظة مسبقاً إن وجدت
+        document.getElementById('sup-url').value = localStorage.getItem('SUPABASE_URL') || '';
+        document.getElementById('sup-key').value = localStorage.getItem('SUPABASE_ANON_KEY') || '';
 
-        function addProduct(e) {
+        document.getElementById('config-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('تم تجهيز النموذج! سنقوم بربطه بقاعدة البيانات فور إدخال معلومات Supabase الخاصة بك.');
-        }
+            const url = document.getElementById('sup-url').value.trim();
+            const key = document.getElementById('sup-key').value.trim();
+            localStorage.setItem('SUPABASE_URL', url);
+            localStorage.setItem('SUPABASE_ANON_KEY', key);
+            alert('تم حفظ إعدادات الاتصال بنجاح!');
+        });
+
+        // رفع الصور وحفظ المنتج
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = localStorage.getItem('SUPABASE_URL');
+            const key = localStorage.getItem('SUPABASE_ANON_KEY');
+
+            if (!url || !key) {
+                alert('الرجاء إدخال وحفظ بيانات الاتصال بـ Supabase أولاً.');
+                return;
+            }
+
+            const supabaseClient = supabase.createClient(url, key);
+            const name = document.getElementById('p-name').value;
+            const price = document.getElementById('p-price').value;
+            const fileInput = document.getElementById('p-image-file');
+            
+            const btn = document.getElementById('save-product-btn');
+            btn.disabled = true;
+            btn.textContent = 'جاري رفع الصورة وإضافة المنتج...';
+
+            try {
+                let imageUrl = '';
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileName = `${Date.now()}_${file.name}`;
+                    
+                    // رفع الصورة إلى bucket اسمه products (تأكد من إنشائه في Supabase Storage كـ Public)
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                        .from('products')
+                        .upload(fileName, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // جلب الرابط العام للصورة
+                    const { data: publicUrlData } = supabaseClient.storage
+                        .from('products')
+                        .getPublicUrl(fileName);
+                    
+                    imageUrl = publicUrlData.publicUrl;
+                } else {
+                    imageUrl = 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop&q=60';
+                }
+
+                // حفظ المنتج في جدول products
+                const { error: dbError } = await supabaseClient
+                    .from('products')
+                    .insert([{ name, price: Number(price), image_url: imageUrl }]);
+
+                if (dbError) throw dbError;
+
+                alert('تمت إضافة المنتج بنجاح إلى المتجر!');
+                document.getElementById('product-form').reset();
+            } catch (err) {
+                alert('حدث خطأ: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'نشر المنتج في المتجر';
+            }
+        });
     </script>
 </body>
 </html>
