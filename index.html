@@ -4,140 +4,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر Forelle | أرقى الأكسسوارات والأزياء النسائية</title>
+    <title>لوحة التحكم | متجر Forelle</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Cairo', sans-serif; }
-        .hero-gradient {
-            background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
-        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col justify-between">
+<body class="bg-gray-50 text-gray-800 min-h-screen pb-12">
 
-    <div>
-        <!-- الشريط العلوي -->
-        <header class="bg-white shadow-sm border-b sticky top-0 z-50">
-            <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-                <div class="flex items-center gap-2 text-sm text-gray-600">
-                    <span class="text-rose-500">📍</span>
-                    <span>تيزي وزو، شارع كريم بلقاسم</span>
-                </div>
-                <div class="text-xl font-black tracking-wider text-gray-900">Forelle</div>
-            </div>
-        </header>
+    <!-- شريط علوي -->
+    <header class="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-pink-600"><i class="fa-solid fa-gauge-high ml-2"></i>لوحة تحكم متجر Forelle</h1>
+            <a href="index.html" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
+                <i class="fa-solid fa-store"></i> عرض المتجر
+            </a>
+        </div>
+    </header>
 
-        <!-- قسم البانر الرئيسي الاحترافي (مماثل لـ Sneakers 16) -->
-        <section class="hero-gradient text-white py-14 px-4 text-center shadow-inner">
-            <div class="max-w-3xl mx-auto space-y-4">
-                <span class="bg-rose-500/20 text-rose-300 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest border border-rose-500/30">متاحة الآن في تيزي وزو</span>
-                <h1 class="text-3xl md:text-5xl font-black tracking-tight">متجر Forelle للأزياء والأكسسوارات</h1>
-                <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto">
-                    اكتشفي أرقى تشكيلة من الحقائب والأزياء النسائية الفاخرة. اطلبي الآن مباشرة عبر الواتساب واستفيدي من توصيل سريع وآمن.
-                </p>
-                <div class="pt-2 flex justify-center gap-3">
-                    <a href="#products-section" class="bg-white text-gray-900 font-bold px-6 py-2.5 rounded-xl shadow hover:bg-gray-100 transition text-sm">تصفح المنتجات ↓</a>
+    <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+        
+        <!-- رسالة التنبيه للأخطاء أو النجاح -->
+        <div id="status-alert" class="hidden p-4 rounded-xl text-sm font-semibold"></div>
+
+        <!-- قسم إعدادات الاتصال بـ Supabase -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-database text-pink-500"></i> إعدادات الاتصال بقاعدة البيانات (Supabase)
+            </h2>
+            <form id="config-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Supabase URL</label>
+                    <input type="text" id="sup-url" placeholder="https://xxxx.supabase.co" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
                 </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Supabase Anon Key</label>
+                    <input type="password" id="sup-key" placeholder="eyJhbGci..." class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
+                </div>
+                <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm">
+                    حفظ بيانات الاتصال
+                </button>
+            </form>
+        </section>
+
+        <!-- قسم إضافة المنتجات مع رفع الصور -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-circle-plus text-pink-500"></i> إضافة منتج جديد بسهولة
+            </h2>
+            <form id="product-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">اسم المنتج</label>
+                    <input type="text" id="p-name" placeholder="مثال: حقيبة نسائية فاخرة" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">السعر (دج)</label>
+                        <input type="number" id="p-price" placeholder="مثال: 6500" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">رفع صورة المنتج من الهاتف</label>
+                        <input type="file" id="p-image-file" accept="image/*" class="w-full px-3 py-1.5 border rounded-xl text-sm file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                    </div>
+                </div>
+                <button type="submit" id="save-product-btn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-pink-600/20">
+                    نشر المنتج في المتجر
+                </button>
+            </form>
+        </section>
+
+        <!-- قسم إدارة وحذف المنتجات -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-pink-500"></i> المنتجات الحالية في المتجر</span>
+                <button onclick="loadProductsList()" class="text-xs bg-pink-50 text-pink-600 px-3 py-1.5 rounded-lg hover:bg-pink-100 transition font-semibold">تحديث القائمة</button>
+            </h2>
+            <div id="products-list" class="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                <p class="text-gray-400 text-sm py-4 text-center">قم بحفظ بيانات الاتصال أولاً لعرض المنتجات.</p>
             </div>
         </section>
 
-        <!-- قسم المنتجات -->
-        <main id="products-section" class="max-w-6xl mx-auto px-4 py-12">
-            <div class="flex items-center justify-between mb-8">
-                <h2 class="text-xl md:text-2xl font-bold text-gray-900 border-r-4 border-rose-500 pr-3">منتجاتنا المميزة</h2>
-                <span id="productCount" class="text-xs text-gray-500 bg-white px-3 py-1 rounded-full border">جاري التحميل...</span>
-            </div>
-
-            <!-- شبكة عرض المنتجات -->
-            <div id="storeProducts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- يتم جلب المنتجات ديناميكياً هنا -->
-                <div class="col-span-full text-center py-12 text-gray-400">
-                    جاري تحميل المنتجات من قاعدة البيانات...
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- التذييل -->
-    <footer class="bg-white border-t py-6 text-center text-xs text-gray-500 mt-12">
-        <p>Forelle 2026 ©️ جميع الحقوق محفوظة</p>
-    </footer>
+    </main>
 
     <script>
-        // إعدادات الاتصال (تقرأ تلقائياً من التخزين المحلي أو يمكنك وضع الرابط والمفتاح هنا مباشرة)
-        const savedUrl = localStorage.getItem('sb_url');
-        const savedKey = localStorage.getItem('sb_key');
+        function showAlert(message, isError = false) {
+            const alertBox = document.getElementById('status-alert');
+            alertBox.className = `p-4 rounded-xl text-sm font-semibold ${isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`;
+            alertBox.textContent = message;
+            alertBox.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        // ضع رقم الواتساب الخاص بك هنا (مثل213798555097)
-        const whatsappNumber = "213798555097"; 
+        // استرجاع الإعدادات المحفوظة
+        const savedUrl = localStorage.getItem('SUPABASE_URL') || '';
+        const savedKey = localStorage.getItem('SUPABASE_ANON_KEY') || '';
+        document.getElementById('sup-url').value = savedUrl;
+        document.getElementById('sup-key').value = savedKey;
 
-        async function fetchStoreProducts() {
-            const container = document.getElementById('storeProducts');
-            const countEl = document.getElementById('productCount');
+        if (savedUrl && savedKey) {
+            loadProductsList();
+        }
 
-            if (!savedUrl || !savedKey) {
-                container.innerHTML = `
-                    <div class="col-span-full bg-amber-50 border border-amber-200 text-amber-800 p-6 rounded-2xl text-center">
-                        <p class="font-bold mb-2">يرجى ربط المتجر بقاعدة البيانات أولاً!</p>
-                        <p class="text-xs text-amber-600 mb-4">قم بزيارة لوحة التحكم لإدخال بيانات Supabase وحفظها.</p>
-                        <a href="admin.html" class="inline-block bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-amber-700 transition">الانتقال لوحة التحكم →</a>
-                    </div>
-                `;
-                countEl.textContent = "غير متصل";
-                return;
-            }
+        document.getElementById('config-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const url = document.getElementById('sup-url').value.trim();
+            const key = document.getElementById('sup-key').value.trim();
+            localStorage.setItem('SUPABASE_URL', url);
+            localStorage.setItem('SUPABASE_ANON_KEY', key);
+            showAlert('تم حفظ إعدادات الاتصال بنجاح!');
+            loadProductsList();
+        });
+
+        // جلب عرض المنتجات في لوحة التحكم
+        async function loadProductsList() {
+            const url = localStorage.getItem('SUPABASE_URL');
+            const key = localStorage.getItem('SUPABASE_ANON_KEY');
+            if (!url || !key) return;
+
+            const supabaseClient = supabase.createClient(url, key);
+            const container = document.getElementById('products-list');
+            container.innerHTML = '<p class="text-gray-400 text-sm py-4 text-center">جاري تحميل المنتجات...</p>';
 
             try {
-                const supabaseClient = window.supabase.createClient(savedUrl, savedKey);
                 const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
-
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    container.innerHTML = `
-                        <div class="col-span-full text-center py-12 text-gray-500 bg-white rounded-2xl border p-8">
-                            <p class="text-base font-semibold">لا توجد منتجات معروضة حالياً.</p>
-                            <p class="text-xs text-gray-400 mt-1">ترقبوا أحدث المنتجات قريباً!</p>
-                        </div>
-                    `;
-                    countEl.textContent = "0 منتجات";
+                    container.innerHTML = '<p class="text-gray-400 text-sm py-4 text-center">لا توجد منتجات حالياً.</p>';
                     return;
                 }
 
-                countEl.textContent = `${data.length} منتجات متاحة`;
-
-                container.innerHTML = data.map(p => {
-                    const message = encodeURIComponent(`مرحباً، أريـد طلب هذا المنتج: ${p.name} بسعر ${p.price} دج`);
-                    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${message}`;
-
-                    return `
-                        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
-                            <div class="relative h-64 bg-gray-100 overflow-hidden">
-                                <img src="${p.image_url}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                container.innerHTML = data.map(product => `
+                    <div class="py-3 flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <img src="${product.image_url}" alt="" class="w-12 h-12 object-cover rounded-xl border">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-800">${product.name}</h4>
+                                <span class="text-xs text-pink-600 font-semibold">${product.price} دج</span>
                             </div>
-                            <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
-                                <div>
-                                    <h3 class="font-bold text-gray-900 text-base mb-1">${p.name}</h3>
-                                    <div class="text-rose-600 font-extrabold text-lg">${p.price} <span class="text-xs font-normal text-gray-500">دج</span></div>
-                                </div>
-                                <a href="${whatsappLink}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-center transition flex items-center justify-center gap-2 text-sm shadow-sm">
-                                    <span>اطلب عبر الواتساب</span>
-                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                </a>
-            </div>
-        </div>
-                    `;
-                }).join('');
-
+                        </div>
+                        <button onclick="deleteProduct(${product.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash"></i> حذف
+                        </button>
+                    </div>
+                `).join('');
             } catch (err) {
-                container.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">حدث خطأ أثناء تحميل المنتجات.</div>`;
-                countEl.textContent = "خطأ";
+                container.innerHTML = `<p class="text-red-500 text-sm py-4 text-center">خطأ في جلب المنتجات: ${err.message}</p>`;
             }
         }
 
-        fetchStoreProducts();
+        // حذف منتج
+        async function deleteProduct(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) return;
+
+            const url = localStorage.getItem('SUPABASE_URL');
+            const key = localStorage.getItem('SUPABASE_ANON_KEY');
+            const supabaseClient = supabase.createClient(url, key);
+
+            try {
+                const { error } = await supabaseClient.from('products').delete().eq('id', id);
+                if (error) throw error;
+                showAlert('تم حذف المنتج بنجاح.');
+                loadProductsList();
+            } catch (err) {
+                showAlert('فشل الحذف: ' + err.message, true);
+            }
+        }
+
+        // رفع الصور وحفظ المنتج
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = localStorage.getItem('SUPABASE_URL');
+            const key = localStorage.getItem('SUPABASE_ANON_KEY');
+
+            if (!url || !key) {
+                showAlert('الرجاء إدخال وحفظ بيانات الاتصال بـ Supabase أولاً.', true);
+                return;
+            }
+
+            const supabaseClient = supabase.createClient(url, key);
+            const name = document.getElementById('p-name').value;
+            const price = document.getElementById('p-price').value;
+            const fileInput = document.getElementById('p-image-file');
+            
+            const btn = document.getElementById('save-product-btn');
+            btn.disabled = true;
+            btn.textContent = 'جاري رفع الصورة وإضافة المنتج...';
+
+            try {
+                let imageUrl = 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop&q=60';
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                    
+                    let { error: uploadError } = await supabaseClient.storage
+                        .from('products')
+                        .upload(fileName, file);
+
+                    if (uploadError && uploadError.message.includes('bucket')) {
+                        await supabaseClient.storage.createBucket('products', { public: true });
+                        const retryUpload = await supabaseClient.storage
+                            .from('products')
+                            .upload(fileName, file);
+                        uploadError = retryUpload.error;
+                    }
+
+                    if (uploadError) throw new Error('خطأ في رفع الصورة: ' + uploadError.message);
+
+                    const { data: publicUrlData } = supabaseClient.storage
+                        .from('products')
+                        .getPublicUrl(fileName);
+                    
+                    imageUrl = publicUrlData.publicUrl;
+                }
+
+                const { error: dbError } = await supabaseClient
+                    .from('products')
+                    .insert([{ name, price: Number(price), image_url: imageUrl }]);
+
+                if (dbError) throw new Error('خطأ في حفظ قاعدة البيانات: ' + dbError.message);
+
+                showAlert('تمت إضافة المنتج ونشره في المتجر بنجاح!');
+                document.getElementById('product-form').reset();
+                loadProductsList();
+            } catch (err) {
+                showAlert(err.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'نشر المنتج في المتجر';
+            }
+        });
     </script>
 </body>
 </html>
