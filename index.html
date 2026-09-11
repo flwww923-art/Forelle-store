@@ -1,243 +1,130 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | متجر Forelle</title>
+    <title>Forelle | متجر الأناقة النسائية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Cairo', sans-serif; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #faf8f5; color: #2c2c2c; }
+        .hero-gradient { background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%); }
+        .gold-text { color: #d4af37; }
+        .gold-bg { background-color: #d4af37; }
+        .gold-border { border-color: #d4af37; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen pb-12">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- شريط علوي -->
-    <header class="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-pink-600"><i class="fa-solid fa-gauge-high ml-2"></i>لوحة تحكم متجر Forelle</h1>
-            <a href="index.html" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2">
-                <i class="fa-solid fa-store"></i> عرض المتجر
-            </a>
-        </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
-        
-        <!-- رسالة التنبيه للأخطاء أو النجاح -->
-        <div id="status-alert" class="hidden p-4 rounded-xl text-sm font-semibold"></div>
-
-        <!-- قسم إعدادات الاتصال بـ Supabase -->
-        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-database text-pink-500"></i> إعدادات الاتصال بقاعدة البيانات (Supabase)
-            </h2>
-            <form id="config-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Supabase URL</label>
-                    <input type="text" id="sup-url" placeholder="https://xxxx.supabase.co" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Supabase Anon Key</label>
-                    <input type="password" id="sup-key" placeholder="eyJhbGci..." class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
-                </div>
-                <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm">
-                    حفظ بيانات الاتصال
-                </button>
-            </form>
-        </section>
-
-        <!-- قسم إضافة المنتجات مع رفع الصور -->
-        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-circle-plus text-pink-500"></i> إضافة منتج جديد بسهولة
-            </h2>
-            <form id="product-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold mb-1">اسم المنتج</label>
-                    <input type="text" id="p-name" placeholder="مثال: حقيبة نسائية فاخرة" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Header & Hero Section -->
+    <div>
+        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center text-white font-bold text-xl shadow-md">F</div>
                     <div>
-                        <label class="block text-sm font-semibold mb-1">السعر (دج)</label>
-                        <input type="number" id="p-price" placeholder="مثال: 6500" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">رفع صورة المنتج من الهاتف</label>
-                        <input type="file" id="p-image-file" accept="image/*" class="w-full px-3 py-1.5 border rounded-xl text-sm file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                        <h1 class="text-2xl font-black tracking-wider text-gray-900">FORELLE</h1>
+                        <p class="text-xs text-gray-500 tracking-widest">BOUTIQUE DE LUXE</p>
                     </div>
                 </div>
-                <button type="submit" id="save-product-btn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-pink-600/20">
-                    نشر المنتج في المتجر
-                </button>
-            </form>
-        </section>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <a href="admin.html" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition font-medium">
+                        <i class="fa-solid fa-lock ml-1"></i> الإدارة
+                    </a>
+                    <a href="https://wa.me/213798555097" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center shadow-sm">
+                        <i class="fa-brands fa-whatsapp ml-2 text-lg"></i> تواصل معنا
+                    </a>
+                </div>
+            </div>
+        </header>
 
-        <!-- قسم إدارة وحذف المنتجات -->
-        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center justify-between">
-                <span class="flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-pink-500"></i> المنتجات الحالية في المتجر</span>
-                <button onclick="loadProductsList()" class="text-xs bg-pink-50 text-pink-600 px-3 py-1.5 rounded-lg hover:bg-pink-100 transition font-semibold">تحديث القائمة</button>
-            </h2>
-            <div id="products-list" class="divide-y divide-gray-100 max-h-96 overflow-y-auto">
-                <p class="text-gray-400 text-sm py-4 text-center">قم بحفظ بيانات الاتصال أولاً لعرض المنتجات.</p>
+        <!-- Hero Banner -->
+        <section class="hero-gradient text-white py-16 px-4 text-center relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-3xl mx-auto relative z-10">
+                <span class="text-xs uppercase tracking-widest gold-text font-semibold bg-white/5 px-3 py-1 rounded-full border border-white/10">مرحباً بكم في عالم الأناقة</span>
+                <h2 class="text-4xl sm:text-5xl font-black mt-4 mb-4">تشكيلة حصرية من أحدث الموضة</h2>
+                <p class="text-gray-300 text-sm sm:text-base max-w-xl mx-auto font-light">استكشفي أروع الحقائب والأزياء المصممة خصيصاً لتناسب ذوقك الرفيع مع خدمة التوصيل السريع.</p>
             </div>
         </section>
 
-    </main>
+        <!-- Products Section -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex justify-between items-center mb-8 border-b pb-4">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class="fa-solid fa-gem gold-text ml-2"></i> منتجاتنا المميزة
+                </h3>
+                <span id="productCount" class="text-xs text-gray-500 bg-white px-3 py-1 rounded-full border shadow-2xs">0 منتج متاحة</span>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- المنتجات يتم حقنها ديناميكياً عبر JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-20 py-8 text-center text-xs text-gray-500">
+        <p>©️ 2026 Forelle Boutique. جميع الحقوق محفوظة.</p>
+        <p class="mt-1 text-gray-400">Bd Krim Belkacem, Tizi Ouzou</p>
+    </footer>
 
     <script>
-        function showAlert(message, isError = false) {
-            const alertBox = document.getElementById('status-alert');
-            alertBox.className = `p-4 rounded-xl text-sm font-semibold ${isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`;
-            alertBox.textContent = message;
-            alertBox.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        const WHATSAPP_NUMBER = "213798555097"; // رقم الواتساب الخاص بالمتجر
 
-        // استرجاع الإعدادات المحفوظة
-        const savedUrl = localStorage.getItem('SUPABASE_URL') || '';
-        const savedKey = localStorage.getItem('SUPABASE_ANON_KEY') || '';
-        document.getElementById('sup-url').value = savedUrl;
-        document.getElementById('sup-key').value = savedKey;
+        function loadProducts() {
+            const grid = document.getElementById('productsGrid');
+            const countBadge = document.getElementById('productCount');
+            let products = JSON.parse(localStorage.getItem('forelle_products')) || [];
 
-        if (savedUrl && savedKey) {
-            loadProductsList();
-        }
+            // منتجات افتراضية فاخرة في حال كان التخزين فارغاً لتجربة فورية رائعة
+            if (products.length === 0) {
+                products = [
+                    { id: 1, name: 'حقيبة لويس فيتون الفاخرة', price: '12,500 دج', desc: 'جلد طبيعي فاخر مع تفاصيل ذهبية أنيقة.', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop&q=80' },
+                    { id: 2, name: 'حقيبة سهرات راقية', price: '8,900 دج', desc: 'تصميم عصري يناسب المناسبات السعيدة.', image: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500&auto=format&fit=crop&q=80' },
+                    { id: 3, name: 'طقم أزياء كلاسيكي', price: '16,000 دج', desc: 'خامات أوروبية عالية الجودة ومريحة.', image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&auto=format&fit=crop&q=80' }
+                ];
+                localStorage.setItem('forelle_products', JSON.stringify(products));
+            }
 
-        document.getElementById('config-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const url = document.getElementById('sup-url').value.trim();
-            const key = document.getElementById('sup-key').value.trim();
-            localStorage.setItem('SUPABASE_URL', url);
-            localStorage.setItem('SUPABASE_ANON_KEY', key);
-            showAlert('تم حفظ إعدادات الاتصال بنجاح!');
-            loadProductsList();
-        });
+            countBadge.innerText = `${products.length} منتج متاحة`;
+            grid.innerHTML = '';
 
-        // جلب عرض المنتجات في لوحة التحكم
-        async function loadProductsList() {
-            const url = localStorage.getItem('SUPABASE_URL');
-            const key = localStorage.getItem('SUPABASE_ANON_KEY');
-            if (!url || !key) return;
-
-            const supabaseClient = supabase.createClient(url, key);
-            const container = document.getElementById('products-list');
-            container.innerHTML = '<p class="text-gray-400 text-sm py-4 text-center">جاري تحميل المنتجات...</p>';
-
-            try {
-                const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<p class="text-gray-400 text-sm py-4 text-center">لا توجد منتجات حالياً.</p>';
-                    return;
-                }
-
-                container.innerHTML = data.map(product => `
-                    <div class="py-3 flex items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <img src="${product.image_url}" alt="" class="w-12 h-12 object-cover rounded-xl border">
-                            <div>
-                                <h4 class="font-bold text-sm text-gray-800">${product.name}</h4>
-                                <span class="text-xs text-pink-600 font-semibold">${product.price} دج</span>
-                            </div>
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col justify-between group";
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-square bg-gray-100">
+                        <img src="${p.image || 'https://via.placeholder.com/400'}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-bold text-gray-900 shadow-xs">
+                            ${p.price}
                         </div>
-                        <button onclick="deleteProduct(${product.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1">
-                            <i class="fa-solid fa-trash"></i> حذف
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow justify-between">
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-900 mb-1">${p.name}</h4>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-4">${p.desc}</p>
+                        </div>
+                        <button onclick="orderViaWhatsApp('${p.name}', '${p.price}')" class="w-full bg-gray-900 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-sm font-medium transition flex items-center justify-center space-x-2 space-x-reverse shadow-sm">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>اطلب عبر الواتساب</span>
                         </button>
                     </div>
-                `).join('');
-            } catch (err) {
-                container.innerHTML = `<p class="text-red-500 text-sm py-4 text-center">خطأ في جلب المنتجات: ${err.message}</p>`;
-            }
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        // حذف منتج
-        async function deleteProduct(id) {
-            if (!confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟')) return;
-
-            const url = localStorage.getItem('SUPABASE_URL');
-            const key = localStorage.getItem('SUPABASE_ANON_KEY');
-            const supabaseClient = supabase.createClient(url, key);
-
-            try {
-                const { error } = await supabaseClient.from('products').delete().eq('id', id);
-                if (error) throw error;
-                showAlert('تم حذف المنتج بنجاح.');
-                loadProductsList();
-            } catch (err) {
-                showAlert('فشل الحذف: ' + err.message, true);
-            }
+        function orderViaWhatsApp(name, price) {
+            const message = `مرحباً متجر Forelle 🌸\nأرغب في طلب هذا المنتج:\n- المنتج: ${name}\n- السعر: ${price}\n\nالرجاء تأكيد الطلب.`;
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
         }
 
-        // رفع الصور وحفظ المنتج
-        document.getElementById('product-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const url = localStorage.getItem('SUPABASE_URL');
-            const key = localStorage.getItem('SUPABASE_ANON_KEY');
-
-            if (!url || !key) {
-                showAlert('الرجاء إدخال وحفظ بيانات الاتصال بـ Supabase أولاً.', true);
-                return;
-            }
-
-            const supabaseClient = supabase.createClient(url, key);
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const fileInput = document.getElementById('p-image-file');
-            
-            const btn = document.getElementById('save-product-btn');
-            btn.disabled = true;
-            btn.textContent = 'جاري رفع الصورة وإضافة المنتج...';
-
-            try {
-                let imageUrl = 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop&q=60';
-                
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                    
-                    let { error: uploadError } = await supabaseClient.storage
-                        .from('products')
-                        .upload(fileName, file);
-
-                    if (uploadError && uploadError.message.includes('bucket')) {
-                        await supabaseClient.storage.createBucket('products', { public: true });
-                        const retryUpload = await supabaseClient.storage
-                            .from('products')
-                            .upload(fileName, file);
-                        uploadError = retryUpload.error;
-                    }
-
-                    if (uploadError) throw new Error('خطأ في رفع الصورة: ' + uploadError.message);
-
-                    const { data: publicUrlData } = supabaseClient.storage
-                        .from('products')
-                        .getPublicUrl(fileName);
-                    
-                    imageUrl = publicUrlData.publicUrl;
-                }
-
-                const { error: dbError } = await supabaseClient
-                    .from('products')
-                    .insert([{ name, price: Number(price), image_url: imageUrl }]);
-
-                if (dbError) throw new Error('خطأ في حفظ قاعدة البيانات: ' + dbError.message);
-
-                showAlert('تمت إضافة المنتج ونشره في المتجر بنجاح!');
-                document.getElementById('product-form').reset();
-                loadProductsList();
-            } catch (err) {
-                showAlert(err.message, true);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'نشر المنتج في المتجر';
-            }
-        });
+        window.onload = loadProducts;
     </script>
 </body>
 </html>
